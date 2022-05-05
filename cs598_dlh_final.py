@@ -10,7 +10,8 @@ from torchvision.transforms import ToTensor
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 import torch.nn as nn
-import tqdm
+from tqdm import tqdm
+import numpy as np
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 df = pd.read_csv('data.csv', low_memory=False) #read in csv file (~800mb)
@@ -95,6 +96,28 @@ cidpri_one_hot = F.one_hot(tensor_cidpri)
 #Drop cidpri column since we are now done with it
 df_input_features = df_input_features.drop(['ap_cidpri'], axis=1)
 
+#Dataloader calss
+class NephrologyDataset(Dataset):
+  def __init__(self, input_features, categorical_features):
+    x = input_features.values
+    y = categorical_features
+    print(y)
+
+    self.x_train = torch.tensor(x, device=device)
+    self.y_train = y.to(device)#torch.tensor(y, device=device)
+
+  def __len__(self):
+    return len(self.y_train)
+  
+  def __getitem__(self, idx):
+    return self.x_train[idx], self.y_train[idx]
+
+#Dataloader initialization
+dataloader = NephrologyDataset(df_input_features[:3190570], cidpri_one_hot[:3190570])
+train_loader = DataLoader(dataloader,batch_size=10,shuffle=True)
+
+print(len(cidpri_one_hot))
+
 #CNN_Softmax model definition
 class CNN_Softmax(torch.nn.Module):
     def __init__(self):
@@ -130,40 +153,19 @@ class CNN_Softmax(torch.nn.Module):
         #print(x.shape)
         return x
 
-#Dataloader calss
-class NephrologyDataset(Dataset):
-  def __init__(self, input_features, categorical_features):
-    x = input_features.values
-    y = categorical_features
-    print(y)
-
-    self.x_train = torch.tensor(x, device=device)
-    self.y_train = y.to(device)#torch.tensor(y, device=device)
-
-  def __len__(self):
-    return len(self.y_train)
-  
-  def __getitem__(self, idx):
-    return self.x_train[idx], self.y_train[idx]
-
-#Dataloader initialization
-dataloader = NephrologyDataset(df_input_features, cidpri_one_hot)
-train_loader = DataLoader(dataloader,batch_size=10,shuffle=False)
-
-print(len(cidpri_one_hot))
-print(len(df_input_features))
-
 #Train
 import torch.optim as optim
 
 print(device)
 net = CNN_Softmax().to(device)
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+optimizer = optim.Adam(net.parameters(), lr=0.001)
 
-for epoch in range(5):  # loop over the dataset multiple times
 
-    running_loss = 0.0
+loss_values = []
+for epoch in tqdm(range(20)):  # loop over the dataset multiple times
+
+    running_loss = []
     for i, data in enumerate(train_loader, 0):
         # get the inputs; data is a list of [inputs, labels]
         inputs, labels = data
@@ -174,6 +176,7 @@ for epoch in range(5):  # loop over the dataset multiple times
         optimizer.zero_grad()
 
         # forward + backward + optimize
+        #print(inputs.shape)
         outputs = net(inputs)
         loss = criterion(outputs, 
                          labels)
@@ -181,9 +184,16 @@ for epoch in range(5):  # loop over the dataset multiple times
         optimizer.step()
 
         # print statistics
-        running_loss += loss.item()
-        if i % 2000 == 1999:    # print every 2000 mini-batches
-            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}')
-            running_loss = 0.0
+        running_loss.append(loss.item())
+        #if i % 2000 == 1999:    # print every 2000 mini-batches
+        #    print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}')
+        #    running_loss = 0.0
+
+    loss_values.append(np.mean(running_loss))
+
 
 print('Finished Training')
+print(loss_values)
+
+#Graphs + Analysis
+plt.plot(np.squeeze(loss_values[1:]))
