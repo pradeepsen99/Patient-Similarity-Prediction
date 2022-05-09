@@ -13,6 +13,7 @@ import torch.nn as nn
 from tqdm import tqdm
 import numpy as np
 
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 df = pd.read_csv('data.csv', low_memory=False) #read in csv file (~800mb)
 
@@ -190,10 +191,20 @@ for epoch in tqdm(range(20)):  # loop over the dataset multiple times
         #    running_loss = 0.0
 
     loss_values.append(np.mean(running_loss))
+    torch.save({
+            'epoch': epoch,
+            'model_state_dict': net.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'loss': loss,
+            }, "epoch_model.tar")
 
 
 print('Finished Training')
 print(loss_values)
 
 #Graphs + Analysis
-plt.plot(np.squeeze(loss_values[1:]))
+plt.plot(np.squeeze([0.12915322762173756, 0.1291532641869452, 0.12915289738539582, 0.12915199591124601, 0.12915498945574325, 0.12915220257586943, 0.12915158238625796, 0.12915261542929246, 0.1291512826819206, 0.12915376529702183, 0.1291511448531501, 0.12915191222426334, 0.1291525584470229, 0.1291505146662546, 0.129151715579587, 0.12915252429505683, 0.12915019009504378, 0.12915197161882294, 0.1291535531988598]))
+
+#Saving model
+torch.save(net, "full_model.pt")
+torch.save(net.state_dict(), "model_dict.pt")

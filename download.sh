@@ -65,8 +65,10 @@ fi
 
 if [[ "$1" == "-w" ]] || [[ "$2" == "-w" ]]; then
     echo "${GREEN}======= BEGIN MODEL WEIGHT DOWNLOAD =======${NC}"
+    
 fi
 
 if [[ "$1" == "-c" ]] || [[ "$2" == "-c" ]]; then
     echo "${GREEN}======= BEGIN DATA CSV DOWNLOAD =======${NC}"
+    wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc\?id\=1uBv9j602LGyN43wvbQDpvka49rR9eNUQ\&confirm\=t" -o data.csv
 fi

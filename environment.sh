@@ -27,7 +27,7 @@ else
     remove_virtualenv
 fi
 
-echo "\nInstalling Virtual environment with requirements.txt"
+echo "\nInstalling Virtual environment with requirements.txt${NC}"
 
 if [[ `find . -name "requirements.txt"` == "" ]]; then
     echo "No requirements.txt file found... Please download it!"
@@ -38,4 +38,4 @@ python3 -m venv env
 source env/bin/activate
 pip3 install -r requirements.txt
 
-echo "\n\nEnvironment sucessfully created at ${VIRTUAL_ENV}"
+echo "${GREEN}\n\nEnvironment sucessfully created at ${VIRTUAL_ENV}${NC}"
