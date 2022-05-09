@@ -1,6 +1,6 @@
 # Patient-Similarity-Prediction
 
-This paper is an attempt at reproducing the results from the paper "A Novel Deep Similarity Learning Approach to Electronic Health Records Data" by Gupta et. al. 
+This repository is an attempt at reproducing the results from the paper "A Novel Deep Similarity Learning Approach to Electronic Health Records Data" by Gupta et. al. 
 ```
 V. Gupta, S. Sachdeva and S. Bhalla, ”A Novel Deep Similarity Learning Approach to Electronic Health Records Data,” in IEEE Access, vol. 8, pp. 209278-209295, 2020, doi: 10.1109ACCESS.2020.3037710.
 ```
