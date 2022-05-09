@@ -29,6 +29,18 @@ This initiates the environment.sh script which should auto-install all of the re
 
 ## Train
 
+To run training on the model with the csv data, simple use the run.sh shell script to auto run training.
+
+To have more fine grained control over the training process, please use the Jupyter notebook and use the specific model needed. Available models are: CNN_Softmax, CNN_Euclidean, CNN_Cosine and a custom version of CNN_Softmax with an added convolution layer.
+
+If you need custom data, please modify data_processing.py and generate your own csv file. This can also be done via the provided Jupyter notebook.
+
 ## Evaluation
 
+Similar to training, to run evaluation of the model with the csv data. Simply use the run.sh shell script to auto run evaluation. The model should auto run eval every epoch and generate F1, Recall, Precision and Accuracy scores. 
+
 ## Pre-Trained models + data
+
+The pretrained models with the corresponding weights are available in the /models directory. 
+
+For downloading the data please use the download.sh shell script to auto download all of the required data.

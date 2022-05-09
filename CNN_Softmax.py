@@ -487,7 +487,7 @@ optimizer = optim.Adam(net.parameters(), lr=0.01)
 
 loss_values = []
 vanishing = False
-for epoch in (range(1)):  # loop over the dataset multiple times
+for epoch in (range(20)):  # loop over the dataset multiple times
     running_loss = []
     for i, data in enumerate(train_loader):
         # get the inputs
@@ -534,9 +534,6 @@ for epoch in (range(1)):  # loop over the dataset multiple times
 
 print('Finished Training')
 print(loss_values)
-
-#Graphs + Analysis
-plt.plot(np.squeeze(loss_values[1:]))
 
 #Saving model
 torch.save(net, "full_model.pt")
